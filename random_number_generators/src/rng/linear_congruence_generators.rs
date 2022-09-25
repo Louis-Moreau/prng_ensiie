@@ -7,8 +7,10 @@ impl RandomNumberGenerator for ParkMiller {
     fn set_seed(&mut self,seed : u64) {
         self.seed = seed;
     }
+}
 
-    fn next(&mut self ) -> u64 {
+impl RNG64bitOutput for ParkMiller {
+    fn next_u64(&mut self ) -> u64 {
         self.seed = lcg(2u64.pow(32)-1,16807,0,self.seed);
         return self.seed;
     }
@@ -25,12 +27,15 @@ impl RandomNumberGenerator for KnuthLewis {
     fn set_seed(&mut self,seed : u64) {
         self.seed = seed;
     }
+}
+impl RNG64bitOutput for KnuthLewis {
 
-    fn next(&mut self ) -> u64 {
+    fn next_u64(&mut self ) -> u64 {
         self.seed = lcg(2u64.pow(32),1664525,1013904223,self.seed);
         return self.seed;
     }
 }
+
 #[inline(always)]
 pub fn knuth_lewis() -> KnuthLewis{
     return KnuthLewis{seed:0};
@@ -44,12 +49,14 @@ impl RandomNumberGenerator for Marsaglia {
     fn set_seed(&mut self,seed : u64) {
         self.seed = seed;
     }
-
-    fn next(&mut self ) -> u64 {
+}
+impl RNG64bitOutput for Marsaglia {
+    fn next_u64(&mut self ) -> u64 {
         self.seed = lcg(2u64.pow(32),69069,0,self.seed);
         return self.seed;
     }
 }
+
 #[inline(always)]
 pub fn marsaglia() -> Marsaglia{
     return Marsaglia{seed:0};
@@ -62,8 +69,9 @@ impl RandomNumberGenerator for LaveuxJenssens {
     fn set_seed(&mut self,seed : u64) {
         self.seed = seed;
     }
-
-    fn next(&mut self ) -> u64 {
+}
+impl RNG64bitOutput for LaveuxJenssens {
+    fn next_u64(&mut self ) -> u64 {
         self.seed = lcg(2u64.pow(48),31167285,1,self.seed);
         return self.seed;
     }
