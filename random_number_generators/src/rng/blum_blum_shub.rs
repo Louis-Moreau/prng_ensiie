@@ -14,13 +14,17 @@ impl RandomNumberGenerator for BlumBlumShub {
     fn set_seed(&mut self,seed : u64) {
         self.generate_p_q_seed(seed);
     }
+
+    fn get_name(self) -> String {
+        return String::from("Blum Blum Shub");
+    }
 }
 
 impl RNG32bitOutput for BlumBlumShub {
     fn next_u32(&mut self) -> u32{
         let mut out : u32 = 0;
         for _i in 0..32 {
-            out = (out << 1) | (self.next_bit()as u32 & 1_u32);
+            out = (out << 1) | (self.next_bit() & 1_u32);
         }
         return out;
     }

@@ -1,9 +1,12 @@
 #![allow(dead_code)]
 mod rng;
+mod analysis;
 use rng::{linear_congruence_generators::*, base::*, lagged_fibonacci_generators::*,blum_blum_shub::*};
 use rand_xoshiro::rand_core::{SeedableRng,RngCore};
 use rand_xoshiro::Xoshiro256PlusPlus;
 use std::time::Instant;
+
+use crate::analysis::analyse;
 
 
 
@@ -69,6 +72,7 @@ fn main() {
 
     println!("time BlumBlumShub: {:?}", end);
     println!("per iter BlumBlumShub: {:?}", end/10_000_000);
+    analyse(vec![Box::new(benchmark)]).is_ok();
 
 
 
@@ -79,7 +83,7 @@ fn main() {
 standard minimal DONE
 michel et moore (fibo retardé) DONE
 standard utilisé par le language DONE
-blum blum shub
+blum blum shub DONE
 congruence linéaire DONE
 
 

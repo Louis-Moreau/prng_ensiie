@@ -13,6 +13,10 @@ impl RandomNumberGenerator for MitchellMoore {
             self.seed[i] = rng.next_u32();
         }
     }
+
+    fn get_name(self) -> String {
+        return String::from("Mitchell & Moore");
+    }
 }
 
 impl RNG32bitOutput for MitchellMoore {

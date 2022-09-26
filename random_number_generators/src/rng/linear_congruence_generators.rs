@@ -7,6 +7,10 @@ impl RandomNumberGenerator for ParkMiller {
     fn set_seed(&mut self,seed : u64) {
         self.seed = seed as u32;
     }
+
+    fn get_name(self) -> String {
+        return String::from("Park Miller");
+    }
 }
 
 impl RNG32bitOutput for ParkMiller {
@@ -26,6 +30,10 @@ pub struct KnuthLewis {
 impl RandomNumberGenerator for KnuthLewis {
     fn set_seed(&mut self,seed : u64) {
         self.seed = seed as u32;
+    }
+
+    fn get_name(self) -> String {
+        return String::from("KnuthLewis");
     }
 }
 impl RNG32bitOutput for KnuthLewis {
@@ -49,6 +57,10 @@ impl RandomNumberGenerator for Marsaglia {
     fn set_seed(&mut self,seed : u64) {
         self.seed = seed as u32;
     }
+
+    fn get_name(self) -> String {
+        return String::from("Marsaglia");
+    }
 }
 impl RNG32bitOutput for Marsaglia {
     fn next_u32(&mut self ) -> u32 {
@@ -68,6 +80,10 @@ pub struct LaveuxJenssens {
 impl RandomNumberGenerator for LaveuxJenssens {
     fn set_seed(&mut self,seed : u64) {
         self.seed = seed;
+    }
+
+    fn get_name(self) -> String {
+        return String::from("Laveux Jenssens");
     }
 }
 impl RNG64bitOutput for LaveuxJenssens {

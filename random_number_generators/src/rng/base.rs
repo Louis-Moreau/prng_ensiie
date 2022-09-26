@@ -1,5 +1,7 @@
 pub trait RandomNumberGenerator{
     fn set_seed(&mut self,seed : u64);
+
+    fn get_name(self) -> String;
 }
 pub trait RNG128bitOutput{
     fn next_u128(&mut self ) -> u128;

@@ -680,6 +680,7 @@ dependencies = [
  "num-primes",
  "num-traits",
  "plotters",
+ "plotters-svg",
  "rand 0.8.5",
  "rand_xoshiro",
 ]
