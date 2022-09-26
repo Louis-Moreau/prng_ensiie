@@ -1,17 +1,17 @@
 use super::base::*;
 
 pub struct ParkMiller {
-    seed : u64,
+    seed : u32,
 }
 impl RandomNumberGenerator for ParkMiller {
     fn set_seed(&mut self,seed : u64) {
-        self.seed = seed;
+        self.seed = seed as u32;
     }
 }
 
-impl RNG64bitOutput for ParkMiller {
-    fn next_u64(&mut self ) -> u64 {
-        self.seed = lcg(2u64.pow(32)-1,16807,0,self.seed);
+impl RNG32bitOutput for ParkMiller {
+    fn next_u32(&mut self ) -> u32 {
+        self.seed = lcg32(2u32.pow(32)-1,16807,0,self.seed);
         return self.seed;
     }
 }
@@ -21,17 +21,17 @@ pub fn park_miller() -> ParkMiller{
 }
 
 pub struct KnuthLewis {
-    seed : u64,
+    seed : u32,
 }
 impl RandomNumberGenerator for KnuthLewis {
     fn set_seed(&mut self,seed : u64) {
-        self.seed = seed;
+        self.seed = seed as u32;
     }
 }
-impl RNG64bitOutput for KnuthLewis {
+impl RNG32bitOutput for KnuthLewis {
 
-    fn next_u64(&mut self ) -> u64 {
-        self.seed = lcg(2u64.pow(32),1664525,1013904223,self.seed);
+    fn next_u32(&mut self ) -> u32 {
+        self.seed = lcg64(2u64.pow(32),1664525,1013904223,self.seed as u64) as u32;
         return self.seed;
     }
 }
@@ -43,16 +43,16 @@ pub fn knuth_lewis() -> KnuthLewis{
 
 
 pub struct Marsaglia {
-    seed : u64,
+    seed : u32,
 }
 impl RandomNumberGenerator for Marsaglia {
     fn set_seed(&mut self,seed : u64) {
-        self.seed = seed;
+        self.seed = seed as u32;
     }
 }
-impl RNG64bitOutput for Marsaglia {
-    fn next_u64(&mut self ) -> u64 {
-        self.seed = lcg(2u64.pow(32),69069,0,self.seed);
+impl RNG32bitOutput for Marsaglia {
+    fn next_u32(&mut self ) -> u32 {
+        self.seed = lcg64(2u64.pow(32),69069,0,self.seed as u64) as u32;
         return self.seed;
     }
 }
@@ -72,7 +72,7 @@ impl RandomNumberGenerator for LaveuxJenssens {
 }
 impl RNG64bitOutput for LaveuxJenssens {
     fn next_u64(&mut self ) -> u64 {
-        self.seed = lcg(2u64.pow(48),31167285,1,self.seed);
+        self.seed = lcg64(2u64.pow(48),31167285,1,self.seed);
         return self.seed;
     }
 }
@@ -87,6 +87,11 @@ pub fn haynes(x:u128) -> u128 {
 }*/
 
 #[inline(always)]
-fn lcg(m:u64,a:u64,c:u64,x:u64) -> u64 {
+fn lcg64(m:u64,a:u64,c:u64,x:u64) -> u64 {
+    return (a * x + c) % m;
+}
+
+#[inline(always)]
+fn lcg32(m:u32,a:u32,c:u32,x:u32) -> u32 {
     return (a * x + c) % m;
 }

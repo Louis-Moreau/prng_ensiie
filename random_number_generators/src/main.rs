@@ -8,31 +8,31 @@ use std::time::Instant;
 
 
 fn main() {
-    /*let mut pm = park_miller();
+    let mut pm = park_miller();
     pm.set_seed(223);
-    println!("parkmiller : {}", pm.next());
-    println!("parkmiller : {}", pm.next());
-    println!("parkmiller : {}", pm.next());
-*/
+    println!("parkmiller : {}", pm.next_u32());
+    println!("parkmiller : {}", pm.next_u32());
+    println!("parkmiller : {}", pm.next_u32());
+
     let mut mm = mitchell_moore();
 
     mm.set_seed(223);
     mm.set_modulo(2_u64.pow(32));
-    println!("mitchellmoore : {}",mm.next_u64());
-    println!("mitchellmoore : {}",mm.next_u64());
+    println!("mitchellmoore : {}",mm.next_u32());
+    println!("mitchellmoore : {}",mm.next_u32());
     for _i in 0..200 {
-        mm.next_u64();
+        mm.next_u32();
     }
-    println!("mitchellmoore : {}",mm.next_u64());
+    println!("mitchellmoore : {}",mm.next_u32());
    
 
-/* 
+ 
     let mut xm = Xoshiro256PlusPlus::seed_from_u64(223);
-    println!("xoshiro256 : {}",xm.next_u64());
-    println!("xoshiro256 : {}",xm.next_u64());
-    println!("xoshiro256 : {}",xm.next_u64());*/
+    println!("xoshiro256 : {}",xm.next_u32());
+    println!("xoshiro256 : {}",xm.next_u32());
+    println!("xoshiro256 : {}",xm.next_u32());
 
-    let mut test1 : [u64; 10_000_000] = [0;10_000_000];
+    let mut test1 : [u32; 10_000_000] = [0;10_000_000];
     let duration = Instant::now();
     
     let mut benchmark = mitchell_moore();
@@ -41,7 +41,7 @@ fn main() {
 
 
     for i in 0..10_000_000 {
-        test1[i] = benchmark.next_u64();
+        test1[i] = benchmark.next_u32();
     }
 
     let end = duration.elapsed();
@@ -49,7 +49,7 @@ fn main() {
     println!("time Mitchel&Moore: {:?}", end);
     println!("per iter Mitchel: {:?}", end/10_000_000);
 
-    let mut test2 : [u64; 10_000_000] = [0;10_000_000];
+    let mut test2 : [u32; 10_000_000] = [0;10_000_000];
 
     
     let mut benchmark = blum_bum_shub();
@@ -58,14 +58,14 @@ fn main() {
     let duration = Instant::now();
 
     for i in 0..10_000_000 {
-        test2[i] = benchmark.next_u64();
+        test2[i] = benchmark.next_u32();
     }
 
     let end = duration.elapsed();
 
-    println!("BlumBlumShub : {}",benchmark.next_u64());
-    println!("BlumBlumShub : {}",benchmark.next_u64());
-    println!("BlumBlumShub : {}",benchmark.next_u64());
+    println!("BlumBlumShub : {}",benchmark.next_u32());
+    println!("BlumBlumShub : {}",benchmark.next_u32());
+    println!("BlumBlumShub : {}",benchmark.next_u32());
 
     println!("time BlumBlumShub: {:?}", end);
     println!("per iter BlumBlumShub: {:?}", end/10_000_000);

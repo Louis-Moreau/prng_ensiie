@@ -2,7 +2,7 @@ use super::base::*;
 use super::linear_congruence_generators::*;
 
 pub struct MitchellMoore {
-    pub seed: [u64;55],
+    pub seed: [u32;55],
     modulo:u64
 }
 impl RandomNumberGenerator for MitchellMoore {
@@ -10,14 +10,14 @@ impl RandomNumberGenerator for MitchellMoore {
         let mut rng = park_miller();
         rng.set_seed(seed);
         for i in 0..55 {
-            self.seed[i] = rng.next_u64();
+            self.seed[i] = rng.next_u32();
         }
     }
 }
 
-impl RNG64bitOutput for MitchellMoore {
-    fn next_u64(&mut self ) -> u64 { //TODO verify u64 is max
-        let out = lagged_fibo(self.seed[23],self.seed[54],self.modulo);
+impl RNG32bitOutput for MitchellMoore {
+    fn next_u32(&mut self ) -> u32 { //TODO verify u64 is max
+        let out = lagged_fibo(self.seed[23] as u64,self.seed[54] as u64,self.modulo) as u32;
         self.seed.rotate_right(1);
         self.seed[0] = out;
         return out;
