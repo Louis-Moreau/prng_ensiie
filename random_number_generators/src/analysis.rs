@@ -2,42 +2,93 @@ use plotters::prelude::*;
 use plotters_svg::SVGBackend;
 use crate::rng::base::*;
 
-pub fn analyse(mut rng32 : Vec<Box<dyn RNG32bitOutput>>) -> Result<(), Box<dyn std::error::Error>> {
+const SCATTER_SAMPLE : usize = 40000;
 
-    let root = SVGBackend::new("0.svg", (640, 480)).into_drawing_area();
+pub fn analyse(mut data : Vec<u32>,name : &str) -> Result<(), Box<dyn std::error::Error>> {
+
+    let sample = data.len() as u32;
+
+    let scatter_data : Vec<(f64,f64)> = data[0..SCATTER_SAMPLE].iter().enumerate().map(|(x)|return ((x.0 as f64) / SCATTER_SAMPLE as f64 , *x.1 as f64 / u32::MAX as f64 ) ).collect();
+    scatter_plot(scatter_data, name);
+
+
+    let mut qq_data = data.clone();
+    qq_data.sort();
+    let qq_data : Vec<(f64,f64)> = qq_data.iter().enumerate().map(|(x)|return (x.0 as f64 /  sample as f64 , *x.1 as f64 / u32::MAX as f64) ).collect();
+    qq_plot(qq_data, name);
+    
+
+
+
+    return Ok(())
+}
+
+
+fn scatter_plot(data : Vec<(f64,f64)> ,name : &str) -> Result<(), Box<dyn std::error::Error>>{
+
+    let path = format!("scatter_{}.png",name);
+    let title = format!("Scatter {}",name);
+
+    let root = BitMapBackend::new(&path, (1920, 1080)).into_drawing_area();
     root.fill(&WHITE)?;
-    let mut chart = ChartBuilder::on(&root)
-        .caption("y=x^2", ("sans-serif", 50).into_font())
+
+    let mut scatter_ctx = ChartBuilder::on(&root)
+        .x_label_area_size(40)
+        .y_label_area_size(40)
         .margin(5)
-        .x_label_area_size(30)
-        .y_label_area_size(30)
-        .build_cartesian_2d(-1f32..1f32, -0.1f32..1f32)?;
-
-    chart.configure_mesh().draw()?;
-
-    chart
-        .draw_series(LineSeries::new(
-            (-50..=50).map(|x| x as f32 / 50.0).map(|x| (x, x * x)),
-            &RED,
-        ))?
-        .label("y = x^2")
-        .legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], &RED));
-
-    chart
-        .configure_series_labels()
-        .background_style(&WHITE.mix(0.8))
-        .border_style(&BLACK)
+        .caption(&title, ("sans-serif", 100.0))
+        .build_cartesian_2d(0f64..1f64, 0f64..1f64)?;
+    scatter_ctx
+        .configure_mesh()
+        .disable_x_mesh()
+        .disable_y_mesh()
         .draw()?;
 
-    root.present()?;
+    scatter_ctx.draw_series(
+        data.iter()
+            .map(|(x ,y)| Circle::new((*x,*y ), 1, BLUE.filled())),
+    )?;
+
+    // To avoid the IO failure being ignored silently, we manually call the present function
+    root.present().expect("Unable to write result to file, please make sure 'plotters-doc-data' dir exists under current dir");
 
 
-    Ok(())
-
-
+    return Ok(())
 
 }
 
+
+//TODO add x = x line
+fn qq_plot(data : Vec<(f64,f64)>, name: &str)-> Result<(), Box<dyn std::error::Error>> {
+
+    let path = format!("qqplot_{}.png",name);
+    let title = format!("QQ Plot {}",name);
+
+    let root = BitMapBackend::new(&path, (1920, 1080)).into_drawing_area();
+    root.fill(&WHITE)?;
+
+    let mut scatter_ctx = ChartBuilder::on(&root)
+        .x_label_area_size(40)
+        .y_label_area_size(40)
+        .margin(5)
+        .caption(&title, ("sans-serif", 100.0))
+        .build_cartesian_2d(0f64..1f64, 0f64..1f64)?;
+    scatter_ctx
+        .configure_mesh()
+        .disable_x_mesh()
+        .disable_y_mesh()
+        .draw()?;
+
+    scatter_ctx.draw_series(
+        data.iter()
+            .map(|(x ,y)| Circle::new((*x,*y ), 1, BLUE.filled())),
+    )?;
+
+    // To avoid the IO failure being ignored silently, we manually call the present function
+    root.present().expect("Unable to write result to file, please make sure 'plotters-doc-data' dir exists under current dir");
+
+    return Ok(());
+}
 /*
 Khi2
 

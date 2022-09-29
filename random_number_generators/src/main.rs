@@ -35,7 +35,7 @@ fn main() {
     println!("xoshiro256 : {}",xm.next_u32());
     println!("xoshiro256 : {}",xm.next_u32());
 
-    let mut test1 : [u32; 10_000_000] = [0;10_000_000];
+    let mut vec_mm = vec![0u32;10_000_000];
     let duration = Instant::now();
     
     let mut benchmark = mitchell_moore();
@@ -44,7 +44,7 @@ fn main() {
 
 
     for i in 0..10_000_000 {
-        test1[i] = benchmark.next_u32();
+        vec_mm[i] = benchmark.next_u32();
     }
 
     let end = duration.elapsed();
@@ -72,7 +72,7 @@ fn main() {
 
     println!("time BlumBlumShub: {:?}", end);
     println!("per iter BlumBlumShub: {:?}", end/10_000_000);
-    analyse(vec![Box::new(benchmark)]).is_ok();
+    analyse(vec_mm,"mm").is_ok();
 
 
 
