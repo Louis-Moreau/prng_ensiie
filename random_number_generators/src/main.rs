@@ -72,7 +72,7 @@ fn main() {
 
     println!("time BlumBlumShub: {:?}", end);
     println!("per iter BlumBlumShub: {:?}", end/10_000_000);
-    analyse(vec_mm,"mm").is_ok();
+    analyse(&vec_mm,"mm").is_ok();
 
 
 

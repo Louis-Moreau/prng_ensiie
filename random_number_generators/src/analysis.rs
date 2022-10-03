@@ -4,27 +4,20 @@ use crate::rng::base::*;
 
 const SCATTER_SAMPLE : usize = 40000;
 
-pub fn analyse(mut data : Vec<u32>,name : &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn analyse(data : &Vec<u32>,name : &str) -> Result<(), Box<dyn std::error::Error>> {
 
-    let sample = data.len() as u32;
+    scatter_plot(&data, name);
 
-    let scatter_data : Vec<(f64,f64)> = data[0..SCATTER_SAMPLE].iter().enumerate().map(|(x)|return ((x.0 as f64) / SCATTER_SAMPLE as f64 , *x.1 as f64 / u32::MAX as f64 ) ).collect();
-    scatter_plot(scatter_data, name);
-
-
-    let mut qq_data = data.clone();
-    qq_data.sort();
-    let qq_data : Vec<(f64,f64)> = qq_data.iter().enumerate().map(|(x)|return (x.0 as f64 /  sample as f64 , *x.1 as f64 / u32::MAX as f64) ).collect();
-    qq_plot(qq_data, name);
+    qq_plot(&data, name);
     
-
-
-
     return Ok(())
 }
 
 
-fn scatter_plot(data : Vec<(f64,f64)> ,name : &str) -> Result<(), Box<dyn std::error::Error>>{
+fn scatter_plot(data : &Vec<u32> ,name : &str) -> Result<(), Box<dyn std::error::Error>>{
+
+    let scatter_data : Vec<(f64,f64)> = data[0..SCATTER_SAMPLE].iter().enumerate().map(|(x)|return ((x.0 as f64) / SCATTER_SAMPLE as f64 , *x.1 as f64 / u32::MAX as f64 ) ).collect();
+
 
     let path = format!("scatter_{}.png",name);
     let title = format!("Scatter {}",name);
@@ -45,7 +38,7 @@ fn scatter_plot(data : Vec<(f64,f64)> ,name : &str) -> Result<(), Box<dyn std::e
         .draw()?;
 
     scatter_ctx.draw_series(
-        data.iter()
+        scatter_data.iter()
             .map(|(x ,y)| Circle::new((*x,*y ), 1, BLUE.filled())),
     )?;
 
@@ -57,9 +50,12 @@ fn scatter_plot(data : Vec<(f64,f64)> ,name : &str) -> Result<(), Box<dyn std::e
 
 }
 
-
 //TODO add x = x line
-fn qq_plot(data : Vec<(f64,f64)>, name: &str)-> Result<(), Box<dyn std::error::Error>> {
+fn qq_plot(data : &Vec<u32>, name: &str)-> Result<(), Box<dyn std::error::Error>> {
+    let sample = data.len() as u32;
+    let mut qq_data = data.clone();
+    qq_data.sort();
+    let qq_data : Vec<(f64,f64)> = qq_data.iter().enumerate().map(|(x)|return (x.0 as f64 /  sample as f64 , *x.1 as f64 / u32::MAX as f64) ).collect();
 
     let path = format!("qqplot_{}.png",name);
     let title = format!("QQ Plot {}",name);
@@ -80,7 +76,7 @@ fn qq_plot(data : Vec<(f64,f64)>, name: &str)-> Result<(), Box<dyn std::error::E
         .draw()?;
 
     scatter_ctx.draw_series(
-        data.iter()
+        qq_data.iter()
             .map(|(x ,y)| Circle::new((*x,*y ), 1, BLUE.filled())),
     )?;
 
@@ -89,6 +85,12 @@ fn qq_plot(data : Vec<(f64,f64)>, name: &str)-> Result<(), Box<dyn std::error::E
 
     return Ok(());
 }
+
+fn histogram(data : &Vec<u32>, name: &str)-> Result<(), Box<dyn std::error::Error>> {
+
+    return Ok(());
+}
+
 /*
 Khi2
 
