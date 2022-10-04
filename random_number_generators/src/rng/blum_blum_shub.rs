@@ -14,10 +14,6 @@ impl RandomNumberGenerator for BlumBlumShub {
     fn set_seed(&mut self,seed : u64) {
         self.generate_p_q_seed(seed);
     }
-
-    fn get_name(self) -> String {
-        return String::from("Blum Blum Shub");
-    }
 }
 
 impl RNG32bitOutput for BlumBlumShub {
@@ -93,5 +89,5 @@ impl BlumBlumShub {
 
 
 pub fn blum_bum_shub() -> BlumBlumShub{
-    return BlumBlumShub{seed:7817,p:7603,q:7487,m:0};
+    return BlumBlumShub{seed:7817,p:7603,q:7487,m:56_923_661};
 }

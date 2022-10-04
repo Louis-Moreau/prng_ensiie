@@ -4,78 +4,90 @@ mod analysis;
 use rng::{linear_congruence_generators::*, base::*, lagged_fibonacci_generators::*,blum_blum_shub::*};
 use rand_xoshiro::rand_core::{SeedableRng,RngCore};
 use rand_xoshiro::Xoshiro256PlusPlus;
-use std::time::Instant;
+use std::time::{Instant, Duration};
 
 use crate::analysis::analyse;
+
+const BENCHMARK_SIZE : usize = 10_000_000;
+
+const SEED : u64 = 224 ;
 
 
 
 fn main() {
-    let mut pm = park_miller();
-    pm.set_seed(223);
-    println!("parkmiller : {}", pm.next_u32());
-    println!("parkmiller : {}", pm.next_u32());
-    println!("parkmiller : {}", pm.next_u32());
 
-    let mut mm = mitchell_moore();
 
-    mm.set_seed(223);
-    mm.set_modulo(2_u64.pow(32));
-    println!("mitchellmoore : {}",mm.next_u32());
-    println!("mitchellmoore : {}",mm.next_u32());
-    for _i in 0..200 {
-        mm.next_u32();
+    let mut park_miller = park_miller();
+    park_miller.set_seed(SEED);
+
+    let mut vec_buffer = vec![0u32;BENCHMARK_SIZE];
+
+    let bench = start_benchmark();
+    for i in 0..BENCHMARK_SIZE {
+        vec_buffer[i] = park_miller.next_u32();
     }
-    println!("mitchellmoore : {}",mm.next_u32());
-   
+    end_benchmark_and_print(bench, "Park Miller");
+    analyse(&vec_buffer,"Park Miller");
 
- 
-    let mut xm = Xoshiro256PlusPlus::seed_from_u64(223);
-    println!("xoshiro256 : {}",xm.next_u32());
-    println!("xoshiro256 : {}",xm.next_u32());
-    println!("xoshiro256 : {}",xm.next_u32());
 
-    let mut vec_mm = vec![0u32;10_000_000];
-    let duration = Instant::now();
+
+    let mut mitchell_moore = mitchell_moore();
+    mitchell_moore.set_seed(SEED);
+    mitchell_moore.set_modulo(2_u64.pow(32));
+
+    let mut vec_buffer = vec![0u32;BENCHMARK_SIZE];
+
+    let bench = start_benchmark();
+    for i in 0..BENCHMARK_SIZE {
+        vec_buffer[i] = mitchell_moore.next_u32();
+    }
+    end_benchmark_and_print(bench, "Mitchell Moore");
+    analyse(&vec_buffer,"Mitchell Moore");
+
+
+
+
+
+    let mut xoshiro = Xoshiro256PlusPlus::seed_from_u64(SEED);
+
+    let mut vec_buffer = vec![0u32;BENCHMARK_SIZE];
+
+    let bench = start_benchmark();
+    for i in 0..BENCHMARK_SIZE {
+        vec_buffer[i] = xoshiro.next_u32();
+    }
+    end_benchmark_and_print(bench, "Xoshiro256++");
+    analyse(&vec_buffer,"Xoshiro256++");
+
+
     
-    let mut benchmark = mitchell_moore();
-    benchmark.set_seed(15);
-    benchmark.set_modulo(2_u64.pow(32));
 
-
-    for i in 0..10_000_000 {
-        vec_mm[i] = benchmark.next_u32();
-    }
-
-    let end = duration.elapsed();
-
-    println!("time Mitchel&Moore: {:?}", end);
-    println!("per iter Mitchel: {:?}", end/10_000_000);
-
-    let mut test2 : [u32; 10_000_000] = [0;10_000_000];
 
     
-    let mut benchmark = blum_bum_shub();
-    benchmark.generate_p_q_seed(15);
+    let mut blum_bum_shub = blum_bum_shub();
+    //blum_bum_shub.generate_p_q_seed(10000000);
 
-    let duration = Instant::now();
+    let mut vec_buffer = vec![0u32;BENCHMARK_SIZE];
 
-    for i in 0..10_000_000 {
-        test2[i] = benchmark.next_u32();
+    let bench = start_benchmark();
+    for i in 0..BENCHMARK_SIZE {
+        vec_buffer[i] = blum_bum_shub.next_u32();
     }
-
-    let end = duration.elapsed();
-
-    println!("BlumBlumShub : {}",benchmark.next_u32());
-    println!("BlumBlumShub : {}",benchmark.next_u32());
-    println!("BlumBlumShub : {}",benchmark.next_u32());
-
-    println!("time BlumBlumShub: {:?}", end);
-    println!("per iter BlumBlumShub: {:?}", end/10_000_000);
-    analyse(&vec_mm,"mm").is_ok();
+    end_benchmark_and_print(bench, "Blum Blum Shub");
+    analyse(&vec_buffer,"Blum Blum Shub");
 
 
 
+}
+
+fn start_benchmark() -> Instant{
+    return Instant::now();
+}
+
+fn end_benchmark_and_print(inst : Instant,name : &str) {
+    let time = inst.elapsed();
+    println!("Time for {} iter of {}: {:?} , {:?} per iteration",BENCHMARK_SIZE , name , time, time/ BENCHMARK_SIZE as u32);
+    
 }
 
 
