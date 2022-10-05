@@ -11,6 +11,8 @@ num-primes = "0.3.0"
 num-traits = "0.2.15"
 plotters = "0.3.4"
 plotters-svg = "0.3.3"
+ndarray-stats = "0.5.1"
+ndarray = "0.15.6"
 
 
 
