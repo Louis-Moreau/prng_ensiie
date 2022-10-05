@@ -16,7 +16,7 @@ impl RandomNumberGenerator for MitchellMoore {
 }
 
 impl RNG32bitOutput for MitchellMoore {
-    fn next_u32(&mut self ) -> u32 { //TODO verify u64 is max
+    fn next_u32(&mut self ) -> u32 {
         let out = lagged_fibo(self.seed[23] as u64,self.seed[54] as u64,self.modulo) as u32;
         self.seed.rotate_right(1);
         self.seed[0] = out;
@@ -40,6 +40,5 @@ pub fn mitchell_moore() -> MitchellMoore{
 
 fn lagged_fibo(xa:u64,xb:u64,m:u64) ->u64 {
     return(xa + xb) % m;
-
 }
 

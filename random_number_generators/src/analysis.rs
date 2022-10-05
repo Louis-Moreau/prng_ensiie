@@ -130,6 +130,7 @@ fn histogram_plot(data : &Vec<u32>, name: &str)-> Result<(), Box<dyn std::error:
 /*
 Khi2
 Moyenne
+corrélation pearson
 
 QQ plot DONE
 histogramme DONE

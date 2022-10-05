@@ -65,7 +65,7 @@ fn main() {
 
     
     let mut blum_bum_shub = blum_bum_shub();
-    //blum_bum_shub.generate_p_q_seed(10000000);
+    //blum_bum_shub.generate_p_q_seed(SEED); not working , do not use
 
     let mut vec_buffer = vec![0u32;BENCHMARK_SIZE];
 
